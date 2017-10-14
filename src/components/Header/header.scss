@@ -1,0 +1,53 @@
+.header {
+  padding: 25px 0;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  background-color: #FFF;
+  z-index: 111;
+  h1{
+    margin: 0;
+  }
+  &__logo {
+    width: 280px;
+    display: inline-block;
+    vertical-align: baseline;
+    float: left;
+    margin-right: 50px;
+  }
+  &__nav {
+    float: left;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    &-item {
+      display: inline-block;
+      vertical-align: baseline;
+      margin-right: 10px;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+    &-link {
+      display: inline-block;
+      padding: 10px;
+      color: black;
+      border-radius: 5px;
+      color: grey;
+      font-size: 15px;
+      transition: all 0.4s ease;
+      &:hover {
+        background-color: grey;
+      }
+      &--active {
+        background-color: grey;
+        color: #FFF;
+        &:hover {
+          background-color: grey;
+        }
+      }
+    }
+  }
+}

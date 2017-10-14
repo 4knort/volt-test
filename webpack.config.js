@@ -8,13 +8,13 @@ module.exports = {
   devtool: 'eval-source-map',
   entry: [
     'webpack-hot-middleware/client?reload=true',
-    path.join(__dirname, 'src/app.jsx')
+    path.join(__dirname, 'src/index.jsx')
   ],
   resolve: {
     root: [
       path.resolve(__dirname, "src"),
     ],
-    extensions: ['', '.js', '.jsx', '.css']
+    extensions: ['', '.js', '.jsx', '.css', 'scss']
   },
   output: {
     path: path.join(__dirname, '/public/'),
@@ -38,10 +38,14 @@ module.exports = {
     loaders: [{
       test: /\.jsx?$/,
       exclude: /node_modules/,
-      loader: 'babel'
-    }, {
-      test: /\.css$/,
-      loader: 'style!css'
+      loader: 'babel-loader',
+      query: {
+        "presets": ["react", ["es2015"], "stage-0"]
+      }
+    },
+    {
+      test: /\.scss$/,
+      loaders: ['style', 'css', 'sass'],
     }]
   }
 };
