@@ -8,7 +8,22 @@ function setCostumers(data) {
   };
 }
 
+function setProducts(data) {
+  return {
+    type: types.SET_PRODUCTS,
+    payload: data,
+  };
+}
+
 export function fetchCustomers() {
+  return function thunkFetch(dispatch) {
+    axios.get('/api/customers').then(response => {
+      dispatch(setCostumers(response.data));
+    });
+  };
+}
+
+export function fetchProducts() {
   return function thunkFetch(dispatch) {
     axios.get('/api/customers').then(response => {
       dispatch(setCostumers(response.data));
@@ -24,16 +39,9 @@ export function saveCustomer(customer) {
   };
 }
 
-export function updateCustomer(customer) {
+export function modifyCustomer(type, customer) {
   return function thunkFetch(dispatch) {
-    axios.put(`/api/customers/${customer.id}`, customer).then(response => {
-      dispatch(fetchCustomers());
-    });
-  };
-}
-export function deleteCustomer(customer) {
-  return function thunkFetch(dispatch) {
-    axios.delete(`/api/customers/${customer.id}`, customer).then(response => {
+    axios[type](`/api/customers/${customer.id}`, customer).then(response => {
       dispatch(fetchCustomers());
     });
   };

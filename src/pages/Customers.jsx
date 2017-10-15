@@ -6,9 +6,9 @@ import { Table } from 'react-bootstrap';
 
 class Customers extends Component {
   state = {
-    customerModal: {
+    elementModal: {
       show: false,
-      customer: {
+      element: {
         name: '',
         address: '',
         phone: '',
@@ -21,25 +21,25 @@ class Customers extends Component {
   }
 
   closeModal = () => {
-    this.setState({ customerModal: {show: false, customer: {}, } }); 
+    this.setState({ elementModal: {show: false, element: {}, } }); 
   }
 
-  openModal = (customer = this.state.customerModal.customer) => {0
-    this.setState({ customerModal: {show: true, customer, } });
+  openModal = (element = this.state.elementModal.element) => {0
+    this.setState({ elementModal: {show: true, element, } });
   }
 
-  modifieCustomer = (customer, action) => {
+  modifyElement = (element, action) => {
     switch(action) {
       case 'delete': {
-        this.props.deleteCustomer(customer);
+        this.props.modifyCustomer('delete', element);
         break;
       }
       case 'update': {
-        this.props.updateCustomer(customer);
+        this.props.modifyCustomer('put', element);
         break;
       }
       case 'save': {
-        this.props.saveCustomer(customer);
+        this.props.saveCustomer(element);
         break;
       }
     }
@@ -77,9 +77,11 @@ class Customers extends Component {
           </tbody>
         </Table>
         <Popup 
-          customerModal={this.state.customerModal}
+          elementModal={this.state.elementModal}
           closeModal={this.closeModal}
-          modifieCustomer={this.modifieCustomer}
+          modifyElement={this.modifyElement}
+          element={'Customer'}
+          fields={['name', 'address', 'phone']}
         />
       </div>
     )

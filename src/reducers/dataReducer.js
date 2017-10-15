@@ -2,6 +2,7 @@ import * as types from 'constants/actionTypes';
 
 const initialState = {
   customers: [],
+  products: [],
 }
 
 export default function dataReducer(state = initialState, action) {
@@ -10,6 +11,12 @@ export default function dataReducer(state = initialState, action) {
       return {
         ...state,
         customers: action.payload,
+      };
+    }
+    case types.SET_PRODUCTS: {
+      return {
+        ...state,
+        products: action.payload,
       };
     }
     

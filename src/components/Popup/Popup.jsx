@@ -14,14 +14,14 @@ import './popup.scss';
 
 export default class Popup extends Component {
   state = {
-    customer: {},
+    element: {},
     deleteAlert: false,
     showInputError: false,
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      customer: nextProps.customerModal.customer
+      element: nextProps.elementModal.element
     })  
   }
 
@@ -29,41 +29,53 @@ export default class Popup extends Component {
     this.setState({showInputError: false})
   }
 
-  keyCodes = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 107, 13, 190, 8, 107, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105];
-
   closeAlert = () => {
     this.setState({deleteAlert: false})
   }
 
   handleInputChange(e, type) {
     const { name, value } = e.target;
-    const { customer } = this.state;
+    const { element } = this.state;
 
-    customer[name] = value;
+    element[name] = value;
 
-    this.setState({ customer });
+    this.setState({ element });
   }
 
   validate = () => {
-    if (this.state.customer.name.length === 0) {
+    if (this.state.element.name.length === 0) {
       this.setState({showInputError: true})
       return false;
     }
 
     return true;
   }
-
+  
   render() {
+    const fields = this.props.fields.map((field,index) => {
+      return(
+        <FormControl
+          key={`form-control-${index}`}
+          style={{marginBottom: '10px'}}
+          type="text"
+          name={field}
+          placeholder={field}
+          value={this.state.element[field]}
+          onChange={(e) => {this.handleInputChange(e, field)}}
+        />
+      )
+    })
+
     return(
       <div>
-        <Modal show={this.props.customerModal.show} onHide={this.props.closeModal}>
+        <Modal show={this.props.elementModal.show} onHide={this.props.closeModal}>
           <Modal.Header>
             <Modal.Title>Modal title</Modal.Title>
-              <If condition={this.state.customer.id}>
+              <If condition={this.state.element.id}>
                 <Button onClick={() => {
                   this.setState({deleteAlert: true});
                   }
-                } bsStyle="danger">Delete Customer</Button>
+                } bsStyle="danger">Delete {this.props.element}</Button>
               </If>
           </Modal.Header>
         
@@ -73,31 +85,7 @@ export default class Popup extends Component {
                 controlId="formBasicText"
               >
                 <ControlLabel bsClass={`control-label ${this.state.showInputError ? 'show' : ''} `}>Name cannot be empty</ControlLabel>
-                <FormControl
-                  style={{marginBottom: '10px'}}
-                  type="text"
-                  name="name"
-                  placeholder={'name'}
-                  value={this.state.customer.name}
-                  onChange={(e) => {this.handleInputChange(e)}}
-                />
-                <FormControl.Feedback />
-                <FormControl
-                  style={{marginBottom: '10px'}}
-                  type="text"
-                  name="address"
-                  placeholder={'address'}
-                  value={this.state.customer.address}
-                  onChange={(e) => {this.handleInputChange(e)}}
-                />
-                <FormControl.Feedback />
-                <FormControl
-                  type="text"
-                  name="phone"
-                  placeholder={'phone'}
-                  value={this.state.customer.phone}
-                  onChange={(e) => {this.handleInputChange(e, 'phone')}}
-                />
+                  {fields}
                 <FormControl.Feedback />
               </FormGroup>
             </form>
@@ -106,19 +94,19 @@ export default class Popup extends Component {
           <Modal.Footer>
             <Button onClick={this.props.closeModal}>Close</Button>
             <Choose>
-              <When condition={this.state.customer.id}>
+              <When condition={this.state.element.id}>
                 <Button bsStyle="primary" onClick={() => {
                   if(!this.validate()) return false;
-                  this.props.modifieCustomer(this.state.customer, 'update');
+                  this.props.modifyElement(this.state.element, 'update');
                   }
-                }>Update Customer</Button>
+                }>Update {this.props.element}</Button>
               </When>
               <Otherwise>
                 <Button bsStyle="primary" onClick={() => {
                   if(!this.validate()) return false;
-                  this.props.modifieCustomer(this.state.customer, 'save');
+                  this.props.modifyElement(this.state.element, 'save');
                   }
-                }>Save Customer</Button>
+                }>Save {this.props.element}</Button>
               </Otherwise>
             </Choose>
           </Modal.Footer>
@@ -126,10 +114,10 @@ export default class Popup extends Component {
 
         <If condition={this.state.deleteAlert}>
           <Alert bsStyle="danger" onDismiss={this.handleAlertDismiss}>
-            <p>Are you sure you want to delete the customer?</p>
+            <p>Are you sure you want to delete the {this.props.element}?</p>
             <p>
               <Button onClick={() => {
-                this.props.modifieCustomer(this.state.customer, 'delete');
+                this.props.modifyElement(this.state.element, 'delete');
                 this.closeAlert(); 
                 }
               } bsStyle="danger">Confirm</Button>
