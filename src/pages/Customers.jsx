@@ -8,7 +8,11 @@ class Customers extends Component {
   state = {
     customerModal: {
       show: false,
-      customer: {},
+      customer: {
+        name: '',
+        address: '',
+        phone: '',
+      },
     },
   }
 
@@ -20,27 +24,30 @@ class Customers extends Component {
     this.setState({ customerModal: {show: false, customer: {}, } }); 
   }
 
-  openModal = (customer = {}) => {0
+  openModal = (customer = this.state.customerModal.customer) => {0
     this.setState({ customerModal: {show: true, customer, } });
   }
 
-  saveCustomer = (customer) => {
-    this.props.saveCustomer(customer);
-    this.closeModal();
-  }
+  modifieCustomer = (customer, action) => {
+    switch(action) {
+      case 'delete': {
+        this.props.deleteCustomer(customer);
+        break;
+      }
+      case 'update': {
+        this.props.updateCustomer(customer);
+        break;
+      }
+      case 'save': {
+        this.props.saveCustomer(customer);
+        break;
+      }
+    }
 
-  updateCustomer = (customer) => {
-    this.props.updateCustomer(customer);
-    this.closeModal();
-  }
-
-  deleteCustomer = (customer) => {
-    this.props.deleteCustomer(customer);
     this.closeModal();
   }
 
   render() {
-    console.log(this.props.customers)
     const customers = this.props.customers.map((customer, index) => {
       return (
         <tr onClick={() => {this.openModal(customer)}} key={`customer-${index}`}>
@@ -72,9 +79,7 @@ class Customers extends Component {
         <Popup 
           customerModal={this.state.customerModal}
           closeModal={this.closeModal}
-          saveCustomer={this.saveCustomer}
-          updateCustomer={this.updateCustomer}
-          deleteCustomer={this.deleteCustomer}
+          modifieCustomer={this.modifieCustomer}
         />
       </div>
     )
