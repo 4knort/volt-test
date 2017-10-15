@@ -21,18 +21,30 @@ export default class Popup extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      element: nextProps.elementModal.element
+      element: nextProps.elementModal.element,
+      showInputError: false,
     })  
-  }
-
-  componentWillUnmount() {
-    this.setState({showInputError: false})
   }
 
   closeAlert = () => {
     this.setState({deleteAlert: false})
   }
+  onKeyDown = (e) => {
+      e.persist();
 
+      let key = e.which || e.keyCode;
+
+      // if pressed enter then trigger modifyElement method
+      if(key == 13){
+        if(!this.validate()) return false;
+
+        if (this.state.element.id) {
+          this.props.modifyElement(this.state.element, 'update');
+        } else {
+          this.props.modifyElement(this.state.element, 'save');
+        }
+      }
+  }
   handleInputChange(e, type) {
     const { name, value } = e.target;
     const { element } = this.state;
@@ -42,8 +54,35 @@ export default class Popup extends Component {
     this.setState({ element });
   }
 
+  checkValidPriceInput = (value) => {
+    if(!value) return false;
+
+    const validSymbols = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', ',' ]
+    let dotsNumber = 0;
+    let valid = true;
+
+    //check if price input has letters
+    const arrSplit = value.split('');
+    arrSplit.forEach(item => {
+      if(!validSymbols.some(symbol => symbol === item)) {
+        valid = false;
+      }
+
+      if(item === '.' || item === ',') dotsNumber += 1;
+    });
+    
+    // only 1 dot is allowed in price input
+    if(dotsNumber > 1) valid = false
+
+    return valid;
+  }
+
   validate = () => {
-    if (this.state.element.name.length === 0) {
+    if (
+      !this.state.element.name || 
+      this.state.element.name.length === 0 || 
+      !this.checkValidPriceInput(this.state.element.price)
+    ) {
       this.setState({showInputError: true})
       return false;
     }
@@ -68,7 +107,7 @@ export default class Popup extends Component {
 
     return(
       <div>
-        <Modal show={this.props.elementModal.show} onHide={this.props.closeModal}>
+        <Modal onKeyDown={this.onKeyDown} show={this.props.elementModal.show} onHide={this.props.closeModal}>
           <Modal.Header>
             <Modal.Title>Modal title</Modal.Title>
               <If condition={this.state.element.id}>
@@ -84,7 +123,7 @@ export default class Popup extends Component {
               <FormGroup
                 controlId="formBasicText"
               >
-                <ControlLabel bsClass={`control-label ${this.state.showInputError ? 'show' : ''} `}>Name cannot be empty</ControlLabel>
+                <ControlLabel bsClass={`control-label ${this.state.showInputError ? 'show' : ''} `}>{this.props.errorText}</ControlLabel>
                   {fields}
                 <FormControl.Feedback />
               </FormGroup>

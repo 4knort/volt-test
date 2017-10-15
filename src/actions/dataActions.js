@@ -25,8 +25,8 @@ export function fetchCustomers() {
 
 export function fetchProducts() {
   return function thunkFetch(dispatch) {
-    axios.get('/api/customers').then(response => {
-      dispatch(setCostumers(response.data));
+    axios.get('/api/products').then(response => {
+      dispatch(setProducts(response.data));
     });
   };
 }
@@ -43,6 +43,22 @@ export function modifyCustomer(type, customer) {
   return function thunkFetch(dispatch) {
     axios[type](`/api/customers/${customer.id}`, customer).then(response => {
       dispatch(fetchCustomers());
+    });
+  };
+}
+
+export function saveProduct(product) {
+  return function thunkFetch(dispatch) {
+    axios.post('/api/products', product).then(response => {
+      dispatch(fetchProducts());
+    });
+  };
+}
+
+export function modifyProduct(type, product) {
+  return function thunkFetch(dispatch) {
+    axios[type](`/api/products/${product.id}`, product).then(response => {
+      dispatch(fetchProducts());
     });
   };
 }

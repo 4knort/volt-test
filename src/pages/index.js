@@ -1,2 +1,2 @@
 export Customers from './Customers';
-// export Products from './Products';
+export Products from './Products';

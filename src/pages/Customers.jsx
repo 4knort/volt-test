@@ -24,11 +24,11 @@ class Customers extends Component {
     this.setState({ elementModal: {show: false, element: {}, } }); 
   }
 
-  openModal = (element = this.state.elementModal.element) => {0
+  openModal = (element = this.state.elementModal.element) => {
     this.setState({ elementModal: {show: true, element, } });
   }
 
-  modifyElement = (element, action) => {
+  modifyCustomer = (element, action) => {
     switch(action) {
       case 'delete': {
         this.props.modifyCustomer('delete', element);
@@ -79,9 +79,10 @@ class Customers extends Component {
         <Popup 
           elementModal={this.state.elementModal}
           closeModal={this.closeModal}
-          modifyElement={this.modifyElement}
+          modifyElement={this.modifyCustomer}
           element={'Customer'}
           fields={['name', 'address', 'phone']}
+          errorText={'Name cannot be empty'}
         />
       </div>
     )
